@@ -1,0 +1,101 @@
+---
+title: My dynamic report
+output: html_fragment
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+
+```
+
+## Is reading related to your iq?
+
+
+```{r}
+
+
+library(tidyverse)
+#csv_file has been given the link so that csv_file is always accessible.
+csv_file = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQES5TvGgIc0cymxVFo58SykjbS4KoVdn5kbegnoTF5Jv5DCCqGhPgqR_YWAMwvzYF8N1ecfbI7zl9M/pub?output=csv"
+
+#I've inputed the csv_file into the value of logged_data.
+logged_data <- read_csv(csv_file)
+
+#I've created the latest_data value which includes the logged_data values and is also updated.
+latest_data <- logged_data %>%
+  rename(read_free_time = 2,
+         num_of_genres = 3,
+         iq = 4,
+         read_impact= 5)
+
+
+
+
+#COMMENTED SECTION
+
+
+
+#I have created 2 values called x and y and placed latest_data within them so when I use them for future purposes the latest_data value isn't affected.
+x <- latest_data
+y <- latest_data
+#I have created a value called yes_read where it filters out all "No's" in read_free_time and only shows "Yes".
+yes_read <- x%>%
+  filter(read_free_time == "Yes")
+
+
+
+#I have created a value called no_read where it filters out all "Yes" in read_free_time and only shows "No".
+no_read <- y%>%
+  filter(read_free_time == "No")
+
+#I used the summary values MIN and MAX to see what the maximum and minimum values for each filtered group.
+
+
+
+#Chart 1 - This chart represents the count of iq groups selected from UOA students that do read in their free time
+yes_iq_graph <- ggplot(data = yes_read)+
+  geom_bar(aes(x = iq, fill = read_free_time)) +
+  labs(title = "Reading in free time vs IQ",
+       subtitle = "Comparing whether reading in your free time is related to IQ.",
+       caption = "source: UOA students",
+       x = "Group of IQ",
+       y = "Count of IQ group selected")
+
+#Chart 2 - This chart represents the count of iq groups selected from UOA students that do NOT read in their free time
+no_iq_graph <- ggplot(data = no_read)+
+  geom_bar(aes(x = iq, fill = read_free_time)) +
+  labs(title = "Reading in free time vs IQ",
+       subtitle = "Comparing if NOT reading in your free time is related to IQ.",
+       caption = "source: UOA students",
+       x = "Group of IQ",
+       y = "Count of IQ group selected")
+
+
+
+
+
+```
+
+The 2 summary values I've chosen to investigate were maximum and minimum of how much reading has an impact on them, which was out of 5. The values are used to look at the variability and difference in how much reading impacts the student but also will be used again to see what IQ group they will fall under. 
+
+The minimum and maximum values for the group that selected yes to reading in their free time are `r min(yes_read$read_impact)` and `r max(yes_read$read_impact)`
+
+The minimum and maximum values for the group that selected no to reading in their free time are `r min(no_read$read_impact)` and  `r max(no_read$read_impact)`
+
+```{r}
+yes_iq_graph
+
+```
+When looking at the group that voted yes to reading in their free time we can see that none of them are not in the below average group, 3 are in the average group (90-110) and the rest are all above average (110+).
+
+```{r}
+no_iq_graph
+```
+When looking at the group that no to reading in their free time we can see that 1 person has an iq that is below average(80-89), 5 have an iq that is average(90-110) and the rest are above average(110+)
+
+
